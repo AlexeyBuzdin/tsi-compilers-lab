@@ -1,0 +1,11 @@
+<ID>     ::= <LETTER> | <ID> <LETTER>
+<KEY>    ::= <LETTER> | <KEY> <LETTER>
+<INT>    ::= <DIGIT> | <INT> <DIGIT>
+<DELIM1> ::= <DOT> | <COLON> | <EQUAL> | @ | ( | ) | [ | ] | ; | , | < | ^ | -
+<DELIM2> ::= <ASSIGN> | <RANGE>
+
+<DOT>    ::= .
+<COLON>  ::= :
+<EQUAL>  ::= =
+<RANGE>  ::= <DOT> <DOT>
+<ASSIGN> ::= <COLON> <EQUAL>
