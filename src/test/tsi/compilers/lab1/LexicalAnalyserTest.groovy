@@ -17,6 +17,18 @@ class LexicalAnalyserTest extends Specification {
         then: lexems.empty
     }
 
+    def "Single special symbol should be returned as a parsed result"() {
+        when: def lexems = analyser.parseToLexems(".")
+        then:
+            lexems.size() == 1
+
+            def parseResult = lexems.get(0)
+            parseResult.uniqueId == 1
+            parseResult.position == 0
+            parseResult.value == "."
+            parseResult.type == LexicalType.SPECIAL_SYMBOL
+    }
+
     @Ignore
     def "Identifier should be returned as a result"() {
         def identifier = "TEditor"
@@ -25,7 +37,7 @@ class LexicalAnalyserTest extends Specification {
             lexems.size() == 1
 
             def parseResult = lexems.get(0)
-            parseResult.id == 1
+            parseResult.uniqueId == 1
             parseResult.position == 0
             parseResult.value == identifier
             parseResult.type == LexicalType.IDENTIFIER
