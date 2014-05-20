@@ -17,13 +17,15 @@ class LexicalAnalyser {
     public List<ParseResult> parseToLexems(String string) {
 
         for (char c : string.chars) {
+            if(!registeredSymbol(c)) {
+                throw new IllegalArgumentException("" + c + " at position " + cursorPosition + " is illegal")
+            }
+
             if (isDelimiter(c)){
-                if (partOfComplexDelimiterInBuffer(c)) {
-                    addCharToStack(c)
-                } else {
+                if (!partOfComplexDelimiterInBuffer(c)) {
                     pushWord()
-                    addCharToStack(c)
                 }
+                addCharToStack(c)
             } else if (isWhitespace(c)) {
                 pushWord()
                 currentPosition = cursorPosition+1
@@ -41,6 +43,10 @@ class LexicalAnalyser {
         return lexems
     }
 
+    boolean registeredSymbol(char c) {
+        isDelimiter(c) || isWhitespace(c) || isAlpha(c) || isNumber(c);
+    }
+
     static boolean isDelimiter(char c) {
         DELIMITERS.stream().filter({
             it.value.length() == 1 && it.value.charAt(0) == c
@@ -49,7 +55,15 @@ class LexicalAnalyser {
     }
 
     static boolean isWhitespace(char c) {
-        Character.isWhitespace(c)
+        Character.isWhitespace(c as int)
+    }
+
+    static boolean isAlpha(char c) {
+        Character.isAlphabetic(c as int)
+    }
+
+    static boolean isNumber(char c) {
+        Character.isDigit(c as int)
     }
 
     boolean currentWordIsEmpty() {

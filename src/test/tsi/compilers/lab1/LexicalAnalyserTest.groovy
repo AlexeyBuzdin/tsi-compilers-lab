@@ -1,6 +1,5 @@
 package tsi.compilers.lab1
 
-import spock.lang.Ignore
 import spock.lang.Specification
 
 class LexicalAnalyserTest extends Specification {
@@ -173,5 +172,12 @@ class LexicalAnalyserTest extends Specification {
             parseResult1.uniqueId == 21
             parseResult1.value == identifier
             parseResult1.type == LexicalType.SPECIAL_SYMBOL
+    }
+
+    def "Unregistered symbol should throw an exception"() {
+        def identifier = "\$"
+        when: analyser.parseToLexems(identifier)
+        then: def e = thrown(IllegalArgumentException)
+              e.message == '$ at position 0 is illegal'
     }
 }

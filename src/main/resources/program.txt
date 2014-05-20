@@ -4,7 +4,7 @@ const
 var  I, P: Word;
 begin
   P := LineStart(CurPtr);  I := P;
-  while (I < CurPtr) and ((Buffer^[I] = ' ') or (Buffer^[I] = #9)) do Inc(I);
+  while (I < CurPtr) and ((Buffer^[I] = #10) or (Buffer^[I] = #9)) do Inc(I);
   InsertText(@CrLf, 2, False);
   if AutoIndent then InsertText(@Buffer^[P], I - P, False);
 end;
