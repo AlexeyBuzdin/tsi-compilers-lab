@@ -6,8 +6,10 @@ import static tsi.compilers.lab1.ApplicationConstants.DELIMITERS
 
 class LexicalAnalyser {
 
-    def cursor = -1;
+    def cursorPosition = 0
     def lexems = new ArrayList<ParseResult>()
+
+    def currentPosition = 0
     def currentChars = new ArrayList<Character>()
 
     public List<ParseResult> parseToLexems(String string) {
@@ -22,12 +24,14 @@ class LexicalAnalyser {
                 }
             } else if (isWhitespace(c)) {
                 pushWord()
+                currentPosition = cursorPosition+1
             } else {
                 addCharToStack(c)
             }
-            cursor++
+            cursorPosition++
         }
-        pushWord()
+
+        clearBuffer()
 
         return lexems
     }
@@ -55,6 +59,10 @@ class LexicalAnalyser {
         currentChars.add(c)
     }
 
+    def clearBuffer() {
+        pushWord()
+    }
+
     def pushWord() {
         if (!currentWordIsEmpty()) {
             def currentWord = currentChars.stream()
@@ -66,7 +74,8 @@ class LexicalAnalyser {
             def uniqueId = delimiter.isPresent() ? delimiter.get().uniqueId : 31
 
             currentChars.clear()
-            lexems.add(new ParseResult(uniqueId, type, currentWord, cursor))
+            lexems.add(new ParseResult(uniqueId, type, currentWord, currentPosition))
+            currentPosition = cursorPosition
         }
     }
 
