@@ -46,7 +46,7 @@ class LexicalAnalyserTest extends Specification {
             lexems.size() == 1
 
             def parseResult = lexems.get(0)
-            parseResult.uniqueId == 31
+            parseResult.uniqueId == 100
             parseResult.position == 0
             parseResult.value == identifier
             parseResult.type == LexicalType.IDENTIFIER
@@ -117,7 +117,6 @@ class LexicalAnalyserTest extends Specification {
             parseResult2.type == LexicalType.SPECIAL_SYMBOL
     }
 
-    @Ignore
     def "Keyword should be returned"() {
         def identifier = "procedure"
         when: def lexems = analyser.parseToLexems(identifier)
@@ -129,5 +128,24 @@ class LexicalAnalyserTest extends Specification {
             parseResult1.uniqueId == 1
             parseResult1.value == identifier
             parseResult1.type == LexicalType.KEYWORD
+    }
+
+    def "Delimiter should not be merged with identifier"() {
+        def identifier = ".NewLine"
+        when: def lexems = analyser.parseToLexems(identifier)
+        then:
+            lexems.size() == 2
+
+            def parseResult1 = lexems.get(0)
+            parseResult1.position == 0
+            parseResult1.uniqueId == 16
+            parseResult1.value == "."
+            parseResult1.type == LexicalType.SPECIAL_SYMBOL
+
+            def parseResult2 = lexems.get(1)
+            parseResult2.position == 1
+            parseResult2.uniqueId == 100
+            parseResult2.value == "NewLine"
+            parseResult2.type == LexicalType.IDENTIFIER
     }
 }

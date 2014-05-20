@@ -13,4 +13,10 @@ class ParseResult {
         this.value = value
         this.position = position
     }
+
+
+    @Override
+    public String toString() {
+        return position + " | " + value + " | " + type + " | " + uniqueId;
+    }
 }

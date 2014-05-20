@@ -3,10 +3,12 @@ package tsi.compilers.lab1
 import java.util.stream.Collectors
 
 import static tsi.compilers.lab1.ApplicationConstants.DELIMITERS
+import static tsi.compilers.lab1.ApplicationConstants.KEYWORDS
 
 class LexicalAnalyser {
 
     def cursorPosition = 0
+    def identifierCounter = 100
     def lexems = new ArrayList<ParseResult>()
 
     def currentPosition = 0
@@ -25,6 +27,9 @@ class LexicalAnalyser {
             } else if (isWhitespace(c)) {
                 pushWord()
                 currentPosition = cursorPosition+1
+            } else if (currentWordIsNotAlpha()) {
+                pushWord()
+                addCharToStack(c)
             } else {
                 addCharToStack(c)
             }
@@ -51,6 +56,10 @@ class LexicalAnalyser {
         currentChars.isEmpty()
     }
 
+    def currentWordIsNotAlpha() {
+        currentChars.stream().filter({Character.isAlphabetic(it as int)}).count() == 0
+    }
+
     boolean partOfComplexDelimiterInBuffer(char c) {
         false
     }
@@ -70,13 +79,29 @@ class LexicalAnalyser {
                     .collect(Collectors.joining())
 
             def delimiter = parseDelimiter(currentWord)
-            def type = delimiter.isPresent() ? LexicalType.SPECIAL_SYMBOL : LexicalType.IDENTIFIER
-            def uniqueId = delimiter.isPresent() ? delimiter.get().uniqueId : 31
+            def keyword = parseKeyword(currentWord)
+            def type
+            def uniqueId
+            if (delimiter.isPresent()) {
+                type = LexicalType.SPECIAL_SYMBOL
+                uniqueId = delimiter.get().uniqueId
+            } else if (keyword.isPresent()) {
+                type = LexicalType.KEYWORD
+                uniqueId = keyword.get().uniqueId
+            } else {
+                type = LexicalType.IDENTIFIER
+                uniqueId = identifierCounter++
+            }
+
 
             currentChars.clear()
             lexems.add(new ParseResult(uniqueId, type, currentWord, currentPosition))
             currentPosition = cursorPosition
         }
+    }
+
+    static def parseKeyword(String s) {
+        KEYWORDS.stream().filter({it.value == s}).findFirst()
     }
 
     static def parseDelimiter(String s) {

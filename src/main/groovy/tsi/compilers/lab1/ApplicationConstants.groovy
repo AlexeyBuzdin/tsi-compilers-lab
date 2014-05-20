@@ -18,6 +18,7 @@ class ApplicationConstants {
             new Keyword(28, "<"),
             new Keyword(29, "^"),
             new Keyword(30, "-"),
+            new Keyword(31, "'"),
     )
 
     public static final KEYWORDS = Arrays.asList(
