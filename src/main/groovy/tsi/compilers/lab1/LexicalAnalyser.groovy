@@ -2,10 +2,13 @@ package tsi.compilers.lab1
 
 import java.util.stream.Collectors
 
+import static tsi.compilers.lab1.ApplicationConstants.DELIMITERS
+
 class LexicalAnalyser {
 
+    def cursor = -1;
     def lexems = new ArrayList<ParseResult>()
-    def currenChars = new ArrayList<Character>()
+    def currentChars = new ArrayList<Character>()
 
     public List<ParseResult> parseToLexems(String string) {
 
@@ -22,25 +25,26 @@ class LexicalAnalyser {
             } else {
                 addCharToStack(c)
             }
+            cursor++
         }
         pushWord()
 
         return lexems
     }
 
-    boolean isDelimiter(char c) {
-        ApplicationConstants.DELIMITERS.stream().filter({
-            it.value.length() ==0 && it.value.charAt(0) == c
+    static boolean isDelimiter(char c) {
+        DELIMITERS.stream().filter({
+            it.value.length() == 1 && it.value.charAt(0) == c
         })
-        .count() == 0
+        .count() == 1
     }
 
-    boolean isWhitespace(char c) {
-        c == ' '
+    static boolean isWhitespace(char c) {
+        Character.isWhitespace(c)
     }
 
     boolean currentWordIsEmpty() {
-        currenChars.isEmpty()
+        currentChars.isEmpty()
     }
 
     boolean partOfComplexDelimiterInBuffer(char c) {
@@ -48,15 +52,25 @@ class LexicalAnalyser {
     }
 
     def addCharToStack(char c) {
-        currenChars.add(c)
+        currentChars.add(c)
     }
 
     def pushWord() {
         if (!currentWordIsEmpty()) {
-            def currentWord = currenChars.stream()
+            def currentWord = currentChars.stream()
                     .map({it.toString()})
                     .collect(Collectors.joining())
-            lexems.add(new ParseResult(1, LexicalType.SPECIAL_SYMBOL, currentWord, 0))
+
+            def delimiter = parseDelimiter(currentWord)
+            def type = delimiter.isPresent() ? LexicalType.SPECIAL_SYMBOL : LexicalType.IDENTIFIER
+            def uniqueId = delimiter.isPresent() ? delimiter.get().uniqueId : 31
+
+            currentChars.clear()
+            lexems.add(new ParseResult(uniqueId, type, currentWord, cursor))
         }
+    }
+
+    static def parseDelimiter(String s) {
+        DELIMITERS.stream().filter({it.value == s}).findFirst()
     }
 }

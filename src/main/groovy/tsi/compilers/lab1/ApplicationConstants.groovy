@@ -3,6 +3,8 @@ package tsi.compilers.lab1
 class ApplicationConstants {
 
     public static final DELIMITERS = Arrays.asList(
-            new SpecialSymbol(1, ".")
+            new Keyword(16, "."),
+            new Keyword(17, "@"),
+            new Keyword(18, ":")
     )
 }

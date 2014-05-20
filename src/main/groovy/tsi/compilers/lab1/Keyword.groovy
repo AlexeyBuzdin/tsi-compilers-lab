@@ -1,10 +1,10 @@
 package tsi.compilers.lab1
 
-class SpecialSymbol {
+class Keyword {
     int uniqueId;
     String value;
 
-    public SpecialSymbol(int uniqueId, String value) {
+    public Keyword(int uniqueId, String value) {
         this.uniqueId = uniqueId;
         this.value = value;
     }
