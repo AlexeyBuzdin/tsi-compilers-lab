@@ -148,4 +148,30 @@ class LexicalAnalyserTest extends Specification {
             parseResult2.value == "NewLine"
             parseResult2.type == LexicalType.IDENTIFIER
     }
+
+    def "Digits should be merged with together"() {
+        def identifier = "12"
+        when: def lexems = analyser.parseToLexems(identifier)
+        then:
+            lexems.size() == 1
+
+            def parseResult1 = lexems.get(0)
+            parseResult1.position == 0
+            parseResult1.uniqueId == 100
+            parseResult1.value == identifier
+            parseResult1.type == LexicalType.IDENTIFIER
+    }
+
+    def "Complex special symbols should be recognized"() {
+        def identifier = ".."
+        when: def lexems = analyser.parseToLexems(identifier)
+        then:
+            lexems.size() == 1
+
+            def parseResult1 = lexems.get(0)
+            parseResult1.position == 0
+            parseResult1.uniqueId == 21
+            parseResult1.value == identifier
+            parseResult1.type == LexicalType.SPECIAL_SYMBOL
+    }
 }

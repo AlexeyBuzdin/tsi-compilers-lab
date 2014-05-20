@@ -27,7 +27,7 @@ class LexicalAnalyser {
             } else if (isWhitespace(c)) {
                 pushWord()
                 currentPosition = cursorPosition+1
-            } else if (currentWordIsNotAlpha()) {
+            } else if (currentWordDoesNotMatchTypeWithChar(c)) {
                 pushWord()
                 addCharToStack(c)
             } else {
@@ -56,12 +56,16 @@ class LexicalAnalyser {
         currentChars.isEmpty()
     }
 
-    def currentWordIsNotAlpha() {
-        currentChars.stream().filter({Character.isAlphabetic(it as int)}).count() == 0
+    def currentWordDoesNotMatchTypeWithChar(char c) {
+        if (Character.isAlphabetic(c as int))
+            return currentChars.stream().filter({Character.isAlphabetic(it as int)}).count() == 0
+        else if (Character.isDigit(c))
+            return currentChars.stream().filter({Character.isDigit(it as int)}).count() == 0
+        return false
     }
 
     boolean partOfComplexDelimiterInBuffer(char c) {
-        false
+        DELIMITERS  .stream().filter({it.value == currentWordAsString() + c}).count() == 1
     }
 
     def addCharToStack(char c) {
@@ -74,9 +78,7 @@ class LexicalAnalyser {
 
     def pushWord() {
         if (!currentWordIsEmpty()) {
-            def currentWord = currentChars.stream()
-                    .map({it.toString()})
-                    .collect(Collectors.joining())
+            def currentWord = currentWordAsString()
 
             def delimiter = parseDelimiter(currentWord)
             def keyword = parseKeyword(currentWord)
@@ -98,6 +100,12 @@ class LexicalAnalyser {
             lexems.add(new ParseResult(uniqueId, type, currentWord, currentPosition))
             currentPosition = cursorPosition
         }
+    }
+
+    def currentWordAsString() {
+        currentChars.stream()
+                .map({ it.toString() })
+                .collect(Collectors.joining())
     }
 
     static def parseKeyword(String s) {
