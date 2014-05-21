@@ -66,6 +66,10 @@ class LexicalAnalyser {
         Character.isDigit(c as int)
     }
 
+    static boolean isNumber(String s) {
+        s.chars().filter({!isNumber(it as char)}).count() == 0
+    }
+
     boolean currentWordIsEmpty() {
         currentChars.isEmpty()
     }
@@ -104,6 +108,9 @@ class LexicalAnalyser {
             } else if (keyword.isPresent()) {
                 type = LexicalType.KEYWORD
                 uniqueId = keyword.get().uniqueId
+            } else if (isNumber(currentWord)) {
+                type = LexicalType.CONST
+                uniqueId = identifierCounter++
             } else {
                 type = LexicalType.IDENTIFIER
                 uniqueId = identifierCounter++

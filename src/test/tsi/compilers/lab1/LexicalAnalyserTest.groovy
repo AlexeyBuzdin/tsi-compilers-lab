@@ -38,6 +38,18 @@ class LexicalAnalyserTest extends Specification {
             parseResult.type == LexicalType.SPECIAL_SYMBOL
     }
 
+    def "Number should be recognized as constant"() {
+        when: def lexems = analyser.parseToLexems("1")
+        then:
+            lexems.size() == 1
+
+            def parseResult = lexems.get(0)
+            parseResult.uniqueId == 100
+            parseResult.position == 0
+            parseResult.value == "1"
+            parseResult.type == LexicalType.CONST
+    }
+
     def "Identifier should be returned"() {
         def identifier = "TEditor"
         when: def lexems = analyser.parseToLexems(identifier)
@@ -158,7 +170,7 @@ class LexicalAnalyserTest extends Specification {
             parseResult1.position == 0
             parseResult1.uniqueId == 100
             parseResult1.value == identifier
-            parseResult1.type == LexicalType.IDENTIFIER
+            parseResult1.type == LexicalType.CONST
     }
 
     def "Complex special symbols should be recognized"() {

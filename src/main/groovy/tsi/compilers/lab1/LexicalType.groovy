@@ -4,6 +4,6 @@ public enum LexicalType {
 
     SPECIAL_SYMBOL,
     KEYWORD,
-    IDENTIFIER
-
+    IDENTIFIER,
+    CONST
 }
