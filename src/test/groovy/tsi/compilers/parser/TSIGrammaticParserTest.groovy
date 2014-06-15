@@ -1,4 +1,4 @@
-package tsi.compilers.lab2
+package tsi.compilers.parser
 
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream

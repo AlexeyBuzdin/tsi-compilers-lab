@@ -1,4 +1,4 @@
-package tsi.compilers.lab1
+package tsi.compilers.common
 
 class Keyword {
     int uniqueId;

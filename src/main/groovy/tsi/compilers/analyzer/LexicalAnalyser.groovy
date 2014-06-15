@@ -1,9 +1,12 @@
-package tsi.compilers.lab1
+package tsi.compilers.analyzer
+
+import tsi.compilers.common.LexicalType
+import tsi.compilers.common.ParseResult
 
 import java.util.stream.Collectors
 
-import static tsi.compilers.lab1.ApplicationConstants.DELIMITERS
-import static tsi.compilers.lab1.ApplicationConstants.KEYWORDS
+import static tsi.compilers.common.ApplicationConstants.DELIMITERS
+import static tsi.compilers.common.ApplicationConstants.KEYWORDS
 
 class LexicalAnalyser {
 
