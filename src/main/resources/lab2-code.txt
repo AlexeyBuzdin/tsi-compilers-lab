@@ -1,9 +1,0 @@
-while ((I < CurPtr) and Buffer^[I] = #10) do Inc(I);
-
-<state> := while (<logical>) do <exec>;
-<logical> := <iden> | <iden> <logicoper> <iden>
-<iden> :=
-<exec> :=
-
-
-(1) BG, I, CurPtr, 9

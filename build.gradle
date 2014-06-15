@@ -4,10 +4,20 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        groovy {
+            srcDir 'src/main/groovy'
+            srcDir 'gen/'
+        }
+    }
+}
+
 dependencies {
     compile (
         "org.codehaus.groovy:groovy-all:2.2.1",
-        "org.slf4j:slf4j-log4j12:1.7.1"
+        "org.slf4j:slf4j-log4j12:1.7.1",
+        "org.antlr:antlr4-runtime:4.2.2"
     )
     testCompile (
         "org.spockframework:spock-core:0.2",
