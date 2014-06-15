@@ -14,9 +14,8 @@ class TSIGrammaticParserTest extends Specification {
             def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("<"))
             TokenStream tokens = new CommonTokenStream(lexer)
             def parser = new TSIGrammaticParser(tokens)
-            parser.errorHandler = new ExceptionErrorStrategy()
         when: parser.expressionOperator()
-        then: notThrown(Exception)
+        then: parser.numberOfSyntaxErrors == 0
     }
 
     def "Grammatics should recognize variable as factor"() {
@@ -24,9 +23,8 @@ class TSIGrammaticParserTest extends Specification {
             def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("Hello"))
             TokenStream tokens = new CommonTokenStream(lexer)
             def parser = new TSIGrammaticParser(tokens)
-            parser.errorHandler = new ExceptionErrorStrategy()
         when: parser.factor()
-        then: notThrown(Exception)
+        then: parser.numberOfSyntaxErrors == 0
     }
 
     def "Grammatics should recognize simple expression"() {
@@ -34,9 +32,80 @@ class TSIGrammaticParserTest extends Specification {
             def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("I < CurPtr"))
             TokenStream tokens = new CommonTokenStream(lexer)
             def parser = new TSIGrammaticParser(tokens)
-            parser.errorHandler = new ExceptionErrorStrategy()
         when: parser.expression()
-        then: notThrown(Exception)
+        then: parser.numberOfSyntaxErrors == 0
+    }
+
+    def "Grammatics should recognize signed numbers with minus"() {
+        given:
+            def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("-10"))
+            TokenStream tokens = new CommonTokenStream(lexer)
+            def parser = new TSIGrammaticParser(tokens)
+        when: parser.signedFactor()
+        then: parser.numberOfSyntaxErrors == 0
+    }
+
+    def "Grammatics should recognize signed numbers with two minuses"() {
+        given:
+            def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("--10"))
+            TokenStream tokens = new CommonTokenStream(lexer)
+            def parser = new TSIGrammaticParser(tokens)
+        when: parser.signedFactor()
+        then: parser.numberOfSyntaxErrors == 0
+    }
+
+    def "Grammatics should have an error on three minuses"() {
+        given:
+            def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("---10"))
+            TokenStream tokens = new CommonTokenStream(lexer)
+            def parser = new TSIGrammaticParser(tokens)
+        when: parser.signedFactor()
+        then: parser.numberOfSyntaxErrors == 1
+    }
+
+    def "Grammatics should recognize signed numbers without sign"() {
+        given:
+            def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("10"))
+            TokenStream tokens = new CommonTokenStream(lexer)
+            def parser = new TSIGrammaticParser(tokens)
+        when: parser.signedFactor()
+        then: parser.numberOfSyntaxErrors == 0
+    }
+
+    def "Grammatics should recognize variable with dimensionQualifier number in brackets"() {
+        given:
+            def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("Buffer^[1]"))
+            TokenStream tokens = new CommonTokenStream(lexer)
+            def parser = new TSIGrammaticParser(tokens)
+        when: parser.variable()
+        then: parser.numberOfSyntaxErrors == 0
+    }
+
+    def "Grammatics should recognize variable with dimensionQualifier identifier in brackets"() {
+        given:
+            def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("Buffer^[I]"))
+            TokenStream tokens = new CommonTokenStream(lexer)
+            def parser = new TSIGrammaticParser(tokens)
+        when: parser.variable()
+        then: parser.numberOfSyntaxErrors == 0
+    }
+
+    def "Grammatics should recognize method expression"() {
+        given:
+            def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("Inc(I)"))
+            TokenStream tokens = new CommonTokenStream(lexer)
+            def parser = new TSIGrammaticParser(tokens)
+        when: parser.expression()
+        then: parser.numberOfSyntaxErrors == 0
+    }
+
+    def "Grammatics should recognize variable with dimensionQualifier method in brackets"() {
+        given:
+            def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("Buffer^[Inc(I)]"))
+            TokenStream tokens = new CommonTokenStream(lexer)
+            def parser = new TSIGrammaticParser(tokens)
+        when: parser.variable()
+        then: parser.numberOfSyntaxErrors == 0
     }
 
     def "Grammatics should support infinite loop with statement"() {
@@ -44,8 +113,7 @@ class TSIGrammaticParserTest extends Specification {
             def lexer  = new TSIGrammaticLexer(new ANTLRInputStream("while (true) do true"))
             TokenStream tokens = new CommonTokenStream(lexer)
             def parser = new TSIGrammaticParser(tokens)
-            parser.errorHandler = new ExceptionErrorStrategy()
-            def code = parser.code()
-        expect: notThrown(Exception)
+            parser.code()
+        expect: parser.numberOfSyntaxErrors == 0
     }
 }

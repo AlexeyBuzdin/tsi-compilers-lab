@@ -2,7 +2,7 @@ package tsi.compilers.lab1
 
 import spock.lang.Specification
 
-class LexicalAnalyserTest {
+class LexicalAnalyserTest extends Specification {
 
     private LexicalAnalyser analyser = new LexicalAnalyser()
 
