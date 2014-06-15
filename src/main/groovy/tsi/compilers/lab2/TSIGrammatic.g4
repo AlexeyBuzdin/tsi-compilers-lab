@@ -1,50 +1,60 @@
-// Define a grammar called Hello
 grammar TSIGrammatic;
 // while ((I < CurPtr) and Buffer^[I] = -10) do Inc(I);
 
-code  : whileStatement ES ;      // match keyword hello followed by an identifier
-
-repetetiveStatement : whileStatement;
-whileStatement: WHILE OB expression CB DO statement;
-
+expressionList: expression (COMMA expression)*;
 expression: simpleExpression (expressionOperator simpleExpression)?;
 expressionOperator: EQ | LT;
 
 simpleExpression: term (simpleOperator term)*;
 term: signedFactor (termOperator signedFactor)*;
-termOperator: STAR | MOD | AND | SLASH | DIV | SLASH | SHL | SHR;
-simpleOperator : PLUS | MINUS | OR | XOR;
+termOperator: AND;
+simpleOperator : PLUS | MINUS;
 
 signedFactor: sign? factor;
-factor: variable | constant; // | memberAccess | bracketedExpression | typeCheck | negation;
+factor: variable | constant | bracketedExpression | memberAccess;
 sign : PLUS | MINUS;
-variable : IDENT (ARROW dimensionQualifiers)?;
-constant: unsignedNumber | signedNumber | IDENT;
+variable : identifier (ARROW dimensionQualifiers)?;
+constant: unsignedNumber | signedNumber | identifier;
+
+bracketedExpression: '(' expression ')';
 
 dimensionQualifiers: '[' dimensionQualifier ']';
 dimensionQualifier:  expression;
 
+// Statement
+statements: (statement ES)+;
 statement: simpleStatement | structuredStatement;
-simpleStatement : 'true';//TODO
-structuredStatement : 'true';//TODO
+simpleStatement : memberAccessStatement | emptyStatement;
+structuredStatement : repetetiveStatement;
+repetetiveStatement : whileStatement;
+whileStatement: WHILE '(' expression ')' DO statement;
+memberAccessStatement : memberAccess;
+emptyStatement: ;
+
+// Methods
+memberAccess: (bracketedExpression | functionCall) dimensionQualifiers?;
+functionCall: identifier argumentList?;
+argumentList: '(' expressionList? ')';
 
 signedNumber : sign unsignedNumber;
 unsignedNumber: unsignedInteger;
 unsignedInteger: LITERAL_INTEGER;
 
+identifier: IDENT;
+
 WHILE : 'while';
 DO : 'do';
+
+AND : 'and';
 
 PLUS : '+';
 MINUS : '-';
 
 ES : ';';
+COMMA : ',';
 
 EQ : '=';
 LT : '<';
-
-OB : '(';
-CB : ')';
 
 ARROW : '^';
 
