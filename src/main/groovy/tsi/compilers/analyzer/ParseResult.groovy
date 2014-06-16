@@ -1,4 +1,4 @@
-package tsi.compilers.common
+package tsi.compilers.analyzer
 
 class ParseResult {
 

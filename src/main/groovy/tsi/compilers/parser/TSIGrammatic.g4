@@ -2,12 +2,12 @@ grammar TSIGrammatic;
 // while ((I < CurPtr) and Buffer^[I] = -10) do Inc(I);
 
 expressionList: expression (COMMA expression)*;
-expression: simpleExpression (expressionOperator simpleExpression)?;
-expressionOperator: EQ | LT;
+expression: simpleExpression (expressionOperator simpleExpression)*;
+expressionOperator: AND;
 
 simpleExpression: term (simpleOperator term)*;
 term: signedFactor (termOperator signedFactor)*;
-termOperator: AND;
+termOperator: EQ | LT;
 simpleOperator : PLUS | MINUS;
 
 signedFactor: sign? factor;

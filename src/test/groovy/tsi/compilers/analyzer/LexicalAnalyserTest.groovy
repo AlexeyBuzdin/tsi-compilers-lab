@@ -1,7 +1,6 @@
 package tsi.compilers.analyzer
 
 import spock.lang.Specification
-import tsi.compilers.common.LexicalType
 
 class LexicalAnalyserTest extends Specification {
 

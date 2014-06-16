@@ -1,9 +1,9 @@
 package tsi.compilers
 
 import tsi.compilers.analyzer.LexicalAnalyser
-import tsi.compilers.common.ParseResult
+import tsi.compilers.analyzer.ParseResult
 import tsi.compilers.parser.Parser
-import tsi.compilers.quarters.QuarterGenerator
+import tsi.compilers.quadruples.QuadrupleGenerator
 
 class Main {
 
@@ -36,13 +36,12 @@ class Main {
     }
 
     private static void startQuarters() {
-        def analyser = new LexicalAnalyser()
-        def lexems = analyser.parseToLexems("while ((I < CurPtr) and Buffer^[I] = -10) do Inc(I);")
+        def s = "while ((I < CurPtr) and Buffer^[I] = -10) do Inc(I);"
 
-        def generator = new QuarterGenerator()
-        def results = generator.generate(lexems)
+        def generator = new QuadrupleGenerator()
+        def results = generator.generate(s)
 
-        for (ParseResult result : results) {
+        for (Object result : results) {
             println result
         }
     }
